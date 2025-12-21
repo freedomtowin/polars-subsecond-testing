@@ -4,13 +4,10 @@ use std::ops::Add;
 
 use polars::prelude::*;
 use polars::datatypes::DataType;
-// use polars_arrow::compute;
-// use std::simd::{Mask, Simd, SimdElement};
 use num_traits::ToPrimitive;
-// use polars_core::prelude::*;
 use polars_core::utils::align_chunks_binary;
 
-use crate::float_sum;
+use super::float_sum;
 
 
 const COV_BUF_SIZE: usize = 64;
@@ -116,7 +113,7 @@ where
     let sample_std_x = (cxx / sample_n).sqrt();
     let sample_std_y = (cyy / sample_n).sqrt();
 
-    sample_cov / (sample_std_x * sample_std_y)
+    sample_cov / (sample_std_x * sample_std_y + 1e-6)
 }
 
 
@@ -126,24 +123,5 @@ pub fn correlation_fn(a: &Series, b: &Series) -> Option<f64> {
     let b = b.cast(&DataType::Float64).ok()?;
     let ret = pearson_corr(a.f64().unwrap(), b.f64().unwrap(), 1);
 
-    // let ret = match a.dtype() {
-    //     DataType::Float32 => pearson_corr(a.f32().unwrap(), b.f32().unwrap(), 1),
-    //     DataType::Float64 => pearson_corr(a.f64().unwrap(), b.f64().unwrap(), 1),
-    //     DataType::Int32 => pearson_corr(a.i32().unwrap(), b.i32().unwrap(), 1),
-    //     DataType::Int64 => pearson_corr(a.i64().unwrap(), b.i64().unwrap(), 1),
-    //     DataType::UInt32 => pearson_corr(a.u32().unwrap(), b.u32().unwrap(), 1),
-    //     _ => {
-    //         let a = a.cast(&DataType::Float64).ok()?;
-    //         let b = b.cast(&DataType::Float64).ok()?;
-    //         pearson_corr(a.f64().unwrap(), b.f64().unwrap(), 1)
-    //     },
-    // };
-    // let out = Series::new(name, &[ret]);
-    // let out = correlation_impl(&series_a, &series_b, 1)
-    //     .map_err(|e| PyValueError::new_err(format!("Something went wrong: {:?}", e)))?;
-    // ffi::rust_series_to_py_series(&out)
-    
-
     ret
-    
 }

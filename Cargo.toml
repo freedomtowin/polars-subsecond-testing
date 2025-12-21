@@ -4,24 +4,25 @@ version = "0.1.0"
 edition = "2024"
 
 [lib]
-name = "my_polars_functions"
+name = "my_polars_extension"
 crate-type = ["cdylib"]
 
-[[bin]]
-name = "loop_test"
-path = "src/loop_test.rs"
-
 [dependencies]
+
 anyhow = "1.0.100"
+
 dioxus = { git = "https://github.com/DioxusLabs/dioxus.git", features = ["desktop"] }
 subsecond = { git = "https://github.com/DioxusLabs/dioxus.git"}
 dioxus-devtools = { git = "https://github.com/DioxusLabs/dioxus.git" }
-notify = "8.2.0"
-time = "0.3.43"
-tokio = { version = "1.47.1", features = ["full"] }
 
-polars = { version = "0.52.0", features = ["lazy", "temporal", "timezones", "ewma", "abs", "interpolate", "rolling_window"] }
-pyo3 = { version = "0.26.0", features = ["extension-module"] }
+polars = { version = "0.52.0", features = ["lazy", "temporal", "timezones", "strings"] }
 polars-core = { version = "0.52.0"}
 polars-arrow = { version = "0.52.0", features=["full"]}
+
+pyo3 = { version = "0.26.0", features = ["extension-module"] }
+
 num-traits = "0.2.19"
+
+[features]
+default = []
+test_correlation = []
